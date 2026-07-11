@@ -8,13 +8,7 @@ export class MongoKit {
   private connected = false;
 
   constructor(config: MongoClientConfig) {
-    try {
-      this.client = new MongoClient(config.uri);
-    } catch (error) {
-      throw new MongoKitError("Failed to create MongoDB client", {
-        cause: error,
-      });
-    }
+    this.client = new MongoClient(config.uri);
   }
 
   async connect() {
@@ -26,56 +20,33 @@ export class MongoKit {
       await this.client.connect();
       this.connected = true;
     } catch (error) {
-      this.connected = false;
-
-      throw new MongoKitError("Failed to connect to MongoDB", {
-        cause: error,
-      });
+      throw new MongoKitError("MongoDB connection failed");
     }
   }
 
   async disconnect() {
-    if (!this.connected) {
-      return;
-    }
-
     try {
       await this.client.close();
       this.connected = false;
     } catch (error) {
-      throw new MongoKitError("Failed to disconnect from MongoDB", {
-        cause: error,
-      });
+      throw new MongoKitError("MongoDB disconnect failed");
     }
   }
 
   database(name: string) {
     try {
-      if (!this.connected) {
-        throw new MongoKitError(
-          "MongoDB is not connected. Call connect() before accessing database."
-        );
-      }
-
-      return new DatabaseManager(this.client.db(name));
+      return new DatabaseManager(
+        this.client.db(name)
+      );
     } catch (error) {
-      if (error instanceof MongoKitError) {
-        throw error;
-      }
-
-      throw new MongoKitError(`Failed to access database: ${name}`, {
-        cause: error,
-      });
+      throw new MongoKitError(
+        `Failed to access database ${name}`
+      );
     }
   }
 
   getClient() {
-    if (!this.connected) {
-      throw new MongoKitError(
-        "MongoDB client is not connected"
-      );
-    }
-
     return this.client;
   }
+  
 }
