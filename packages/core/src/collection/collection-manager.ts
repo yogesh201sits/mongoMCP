@@ -1,4 +1,4 @@
-import type {  Collection,  Document, Filter,  UpdateFilter} from "mongodb";
+import type {  Collection, Document,  Filter,  UpdateFilter,  IndexDescription,IndexSpecification} from "mongodb";
 
 export class CollectionManager {
 
@@ -18,20 +18,86 @@ export class CollectionManager {
   async find(
     filter: Filter<Document> = {}
   ) {
-
     return await this.collection
       .find(filter)
       .toArray();
-
   }
 
 
   async findOne(
     filter: Filter<Document>
   ) {
-
     return await this.collection
       .findOne(filter);
+  }
+
+  async dropIndex(
+    name:string
+    ){
+
+    return await this.collection
+        .dropIndex(name);
+
+   }
+
+  async count(
+    filter: Filter<Document> = {}
+  ) {
+    return await this.collection
+      .countDocuments(filter);
+  }
+
+  async aggregate(
+    pipeline: Document[]
+    ) {
+
+    return await this.collection
+        .aggregate(pipeline)
+        .toArray();
+
+  }
+
+  async listIndexes() {
+
+    return await this.collection
+      .indexes();
+
+ }
+
+
+async createIndex(index: IndexSpecification) {
+  return await this.collection.createIndex(index);
+}
+
+
+  async findPaginated(
+    filter: Filter<Document> = {},
+    page: number = 1,
+    limit: number = 10
+  ) {
+
+    const skip = (page - 1) * limit;
+
+
+    const data = await this.collection
+      .find(filter)
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+
+
+    const total = await this.collection
+      .countDocuments(filter);
+
+
+    return {
+      data,
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+      hasMore: page * limit < total
+    };
 
   }
 
@@ -39,20 +105,16 @@ export class CollectionManager {
   async insert(
     document: Document
   ) {
-
     return await this.collection
       .insertOne(document);
-
   }
 
 
   async insertMany(
     documents: Document[]
   ) {
-
     return await this.collection
       .insertMany(documents);
-
   }
 
 
@@ -60,23 +122,19 @@ export class CollectionManager {
     filter: Filter<Document>,
     update: UpdateFilter<Document>
   ) {
-
     return await this.collection
       .updateMany(
         filter,
         update
       );
-
   }
 
 
   async delete(
     filter: Filter<Document>
   ) {
-
     return await this.collection
       .deleteMany(filter);
-
   }
 
 

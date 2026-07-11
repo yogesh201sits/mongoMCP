@@ -8,29 +8,45 @@ const mongo = new MongoKit({
 
 async function main() {
 
-  await mongo.connect();
+    await mongo.connect();
 
-  console.log("Connected");
-
-
-  const users = mongo
-    .database("test")
-    .collection("users");
+    console.log("Connected");
 
 
-  await users.insert({
-    name: "Yogesh",
-    age: 21
-  });
+    const users = mongo
+     .database("test")
+     .collection("users");
 
 
-  const data = await users.find({});
+    const user = await users.findOne({
+    name: "Yogesh"
+    });
 
 
-  console.log(data);
+    console.log("ONE USER");
+    console.log(user);
 
 
-  await mongo.disconnect();
+
+    const count = await users.count();
+
+    console.log("COUNT");
+    console.log(count);
+
+
+
+    const result = await users.findPaginated(
+    {},
+    1,
+    2
+    );
+
+
+    console.log("PAGINATION");
+    console.log(result);
+
+
+    await mongo.disconnect();
 
 }
 
