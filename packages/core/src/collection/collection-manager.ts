@@ -1,4 +1,5 @@
 import type {Collection,  Document,  Filter,  UpdateFilter,  IndexSpecification} from "mongodb";
+import { CreateIndexesOptions } from "mongodb";
 
 import { serialize } from "../utils/serializer";
 
@@ -91,11 +92,14 @@ export class CollectionManager {
 
 
   async createIndex(
-    index: IndexSpecification
-  ) {
-    return await this.collection
-      .createIndex(index);
-  }
+  key: IndexSpecification,
+  options?: CreateIndexesOptions
+) {
+  return await this.collection.createIndex(
+    key,
+    options
+  );
+}
 
 
   async findPaginated(

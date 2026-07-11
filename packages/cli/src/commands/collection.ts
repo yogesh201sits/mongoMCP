@@ -93,7 +93,8 @@ export function collectionCommands(program: Command) {
 
     await mongo.disconnect();
   });
-
+  
+  //delete
   collection
   .command("delete <database> <collection>")
   .description("Delete documents")
