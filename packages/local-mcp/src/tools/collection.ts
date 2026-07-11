@@ -36,4 +36,36 @@ export function registerCollectionTools(server: McpServer) {
       };
     }
   );
+  server.registerTool(
+  "insert_document",
+  {
+    title: "Insert Document",
+    description: "Insert a document into a MongoDB collection.",
+    inputSchema: {
+      uri: z.string(),
+      database: z.string(),
+      collection: z.string(),
+      document: z.record(z.string(), z.any()),
+    },
+  },
+  async ({ uri, database, collection, document }) => {
+    const mongo = await createMongo(uri);
+
+    const result = await mongo
+      .database(database)
+      .collection(collection)
+      .insert(document);
+
+    await mongo.disconnect();
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(result, null, 2),
+        },
+      ],
+    };
+  }
+);
 }
