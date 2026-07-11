@@ -1,16 +1,16 @@
 {
   "name": "mongodb-kit",
+  "devDependencies": {
+    "@types/bun": "^1.3.14"
+  },
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
     "dev": "bun --filter '*' dev",
     "build": "bun --filter '*' build",
     "check": "bun --filter '*' check",
     "test": "bun test"
   },
-  "devDependencies": {
-    "@types/bun": "^1.3.14"
-  }
+  "workspaces": [
+    "packages/*"
+  ]
 }

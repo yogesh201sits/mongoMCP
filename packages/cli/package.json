@@ -1,0 +1,12 @@
+{
+  "name": "@mongodb-kit/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "mongodb-kit": "./src/index.ts"
+  },
+  "dependencies": {
+    "@mongodb-kit/core": "workspace:*",
+    "commander": "^15.0.0"
+  }
+}

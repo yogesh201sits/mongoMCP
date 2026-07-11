@@ -1,4 +1,5 @@
 import type {Collection,  Document,  Filter,  UpdateFilter,  IndexSpecification} from "mongodb";
+import { CreateIndexesOptions } from "mongodb";
 
 import { serialize } from "../utils/serializer";
 
@@ -19,13 +20,28 @@ export class CollectionManager {
 
 
   async find(
-    filter: Filter<Document> = {}
+    filter = {},
+    options?: {
+      limit?: number;
+      skip?: number;
+      sort?: Record<string, 1 | -1>;
+    }
   ) {
-    const data = await this.collection
-      .find(filter)
-      .toArray();
+    let cursor = this.collection.find(filter);
 
-    return serialize(data);
+    if (options?.sort) {
+      cursor = cursor.sort(options.sort);
+    }
+
+    if (options?.skip) {
+      cursor = cursor.skip(options.skip);
+    }
+
+    if (options?.limit) {
+      cursor = cursor.limit(options.limit);
+    }
+
+    return await cursor.toArray();
   }
 
 
@@ -76,11 +92,14 @@ export class CollectionManager {
 
 
   async createIndex(
-    index: IndexSpecification
-  ) {
-    return await this.collection
-      .createIndex(index);
-  }
+  key: IndexSpecification,
+  options?: CreateIndexesOptions
+) {
+  return await this.collection.createIndex(
+    key,
+    options
+  );
+}
 
 
   async findPaginated(

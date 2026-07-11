@@ -8,6 +8,17 @@
         "@types/bun": "^1.3.14",
       },
     },
+    "packages/cli": {
+      "name": "@mongodb-kit/cli",
+      "version": "0.1.0",
+      "bin": {
+        "mongodb-kit": "./src/index.ts",
+      },
+      "dependencies": {
+        "@mongodb-kit/core": "workspace:*",
+        "commander": "^15.0.0",
+      },
+    },
     "packages/core": {
       "name": "@mongodb-kit/core",
       "version": "0.1.0",
@@ -19,6 +30,8 @@
   },
   "packages": {
     "@mongodb-js/saslprep": ["@mongodb-js/saslprep@1.4.12", "", { "dependencies": { "sparse-bitfield": "^3.0.3" } }, "sha512-QAfAMwNgnYxZ2C6D1HgeP7Gc4i/uvJRim415PCIL9ptRxWMNbWeLBYb2/9R4pGKny/s1FVu2JA2cxCUBUOggrA=="],
+
+    "@mongodb-kit/cli": ["@mongodb-kit/cli@workspace:packages/cli"],
 
     "@mongodb-kit/core": ["@mongodb-kit/core@workspace:packages/core"],
 
@@ -33,6 +46,8 @@
     "bson": ["bson@6.10.4", "", {}, "sha512-WIsKqkSC0ABoBJuT1LEX+2HEvNmNKKgnTAyd0fL8qzK4SH2i9NXg+t08YtdZp/V9IZ33cxe3iV4yM0qg8lMQng=="],
 
     "bun-types": ["bun-types@1.3.14", "", { "dependencies": { "@types/node": "*" } }, "sha512-4N0ig0fEomHt5R0KCFWjovxow98rIoRwKolrYdCcknNwMekCXRnWEUvgu5soYV8QXtVsrUD8B95MBOZGPvr6KQ=="],
+
+    "commander": ["commander@15.0.0", "", {}, "sha512-z67u4ZhzCL/Tydu1lJARtEZYWbWaN7oYLHbsuzocr6y4N6WZAagG3RQ4FW61V1/0+jImpj293XfrcYnd1qxtPg=="],
 
     "memory-pager": ["memory-pager@1.5.0", "", {}, "sha512-ZS4Bp4r/Zoeq6+NLJpP+0Zzm0pR8whtGPf1XExKLJBAczGMnSi3It14OiNCStjQjM6NU1okjQGSxgEZN8eBYKg=="],
 
