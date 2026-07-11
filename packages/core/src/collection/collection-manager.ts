@@ -1,4 +1,13 @@
-import type {  Collection, Document,  Filter,  UpdateFilter,  IndexDescription,IndexSpecification} from "mongodb";
+import type {
+  Collection,
+  Document,
+  Filter,
+  UpdateFilter,
+  IndexSpecification
+} from "mongodb";
+
+import { serialize } from "../utils/serializer";
+
 
 export class CollectionManager {
 
@@ -18,27 +27,31 @@ export class CollectionManager {
   async find(
     filter: Filter<Document> = {}
   ) {
-    return await this.collection
+    const data = await this.collection
       .find(filter)
       .toArray();
+
+    return serialize(data);
   }
 
 
   async findOne(
     filter: Filter<Document>
   ) {
-    return await this.collection
+    const data = await this.collection
       .findOne(filter);
+
+    return serialize(data);
   }
 
+
   async dropIndex(
-    name:string
-    ){
-
+    name: string
+  ) {
     return await this.collection
-        .dropIndex(name);
+      .dropIndex(name);
+  }
 
-   }
 
   async count(
     filter: Filter<Document> = {}
@@ -47,27 +60,33 @@ export class CollectionManager {
       .countDocuments(filter);
   }
 
+
   async aggregate(
     pipeline: Document[]
-    ) {
+  ) {
 
-    return await this.collection
-        .aggregate(pipeline)
-        .toArray();
+    const data = await this.collection
+      .aggregate(pipeline)
+      .toArray();
 
+    return serialize(data);
   }
+
 
   async listIndexes() {
 
     return await this.collection
       .indexes();
 
- }
+  }
 
 
-async createIndex(index: IndexSpecification) {
-  return await this.collection.createIndex(index);
-}
+  async createIndex(
+    index: IndexSpecification
+  ) {
+    return await this.collection
+      .createIndex(index);
+  }
 
 
   async findPaginated(
@@ -91,7 +110,7 @@ async createIndex(index: IndexSpecification) {
 
 
     return {
-      data,
+      data: serialize(data),
       page,
       limit,
       total,
