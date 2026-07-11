@@ -5,7 +5,8 @@ import { readJsonFile } from "../utils/file";
 
 export function collectionCommands(program: Command) {
   const collection = program.command("collection");
-
+  
+  //find
   collection
     .command("find <database> <collection>")
     .description("Find documents")
@@ -43,24 +44,115 @@ export function collectionCommands(program: Command) {
       await mongo.disconnect();
     });
 
-collection
-  .command("insert <database> <collection>")
-  .description("Insert a document")
-  .requiredOption("--file <path>", "Path to a JSON file")
+  //read
+  collection
+    .command("insert <database> <collection>")
+    .description("Insert a document")
+    .requiredOption("--file <path>", "Path to a JSON file")
+    .action(async (database, collectionName, options) => {
+      const { uri } = program.opts();
+
+      const mongo = await createMongo(uri);
+
+      const fileContent = await readFile(options.file, "utf-8");
+      const document = JSON.parse(fileContent);
+
+      const result = await mongo
+        .database(database)
+        .collection(collectionName)
+        .insert(document);
+
+      console.log(JSON.stringify(result, null, 2));
+
+      await mongo.disconnect();
+    });
+
+    //update
+  collection
+  .command("update <database> <collection>")
+  .description("Update documents")
+  .requiredOption("--filter <path>", "Path to filter JSON file")
+  .requiredOption("--update <path>", "Path to update JSON file")
   .action(async (database, collectionName, options) => {
     const { uri } = program.opts();
 
     const mongo = await createMongo(uri);
 
-    const fileContent = await readFile(options.file, "utf-8");
-    const document = JSON.parse(fileContent);
+    const filterContent = await readFile(options.filter, "utf-8");
+    const filter = JSON.parse(filterContent);
+
+    const updateContent = await readFile(options.update, "utf-8");
+    const update = JSON.parse(updateContent);
 
     const result = await mongo
       .database(database)
       .collection(collectionName)
-      .insert(document);
+      .update(filter, update);
 
     console.log(JSON.stringify(result, null, 2));
+
+    await mongo.disconnect();
+  });
+
+  collection
+  .command("delete <database> <collection>")
+  .description("Delete documents")
+  .requiredOption(
+    "--filter <path>",
+    "Path to filter JSON file"
+  )
+  .action(async (database, collectionName, options) => {
+    const { uri } = program.opts();
+
+    const mongo = await createMongo(uri);
+
+    const filterContent = await readFile(
+      options.filter,
+      "utf-8"
+    );
+
+    const filter = JSON.parse(filterContent);
+
+    const result = await mongo
+      .database(database)
+      .collection(collectionName)
+      .delete(filter);
+
+    console.log(
+      JSON.stringify(result, null, 2)
+    );
+
+    await mongo.disconnect();
+  });
+
+  //aggregate
+  collection
+  .command("aggregate <database> <collection>")
+  .description("Run an aggregation pipeline")
+  .requiredOption(
+    "--pipeline <path>",
+    "Path to aggregation pipeline JSON"
+  )
+  .action(async (database, collectionName, options) => {
+    const { uri } = program.opts();
+
+    const mongo = await createMongo(uri);
+
+    const pipelineContent = await readFile(
+      options.pipeline,
+      "utf-8"
+    );
+
+    const pipeline = JSON.parse(pipelineContent);
+
+    const result = await mongo
+      .database(database)
+      .collection(collectionName)
+      .aggregate(pipeline);
+
+    console.log(
+      JSON.stringify(result, null, 2)
+    );
 
     await mongo.disconnect();
   });
