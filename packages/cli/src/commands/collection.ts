@@ -1,5 +1,7 @@
 import { Command } from "commander";
 import { createMongo } from "../context";
+import { readFile } from "node:fs/promises";
+import { readJsonFile } from "../utils/file";
 
 export function collectionCommands(program: Command) {
   const collection = program.command("collection");
@@ -40,4 +42,27 @@ export function collectionCommands(program: Command) {
 
       await mongo.disconnect();
     });
+
+collection
+  .command("insert <database> <collection>")
+  .description("Insert a document")
+  .requiredOption("--file <path>", "Path to a JSON file")
+  .action(async (database, collectionName, options) => {
+    const { uri } = program.opts();
+
+    const mongo = await createMongo(uri);
+
+    const fileContent = await readFile(options.file, "utf-8");
+    const document = JSON.parse(fileContent);
+
+    const result = await mongo
+      .database(database)
+      .collection(collectionName)
+      .insert(document);
+
+    console.log(JSON.stringify(result, null, 2));
+
+    await mongo.disconnect();
+  });
+
 }
