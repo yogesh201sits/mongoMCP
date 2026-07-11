@@ -13,9 +13,18 @@ export class MongoKit {
     if (this.connected) {
       return;
     }
+    try {
+      await this.client.connect();
+      this.connected = true;
+    } catch (error) {
+      this.connected = false;
 
-    await this.client.connect();
-    this.connected = true;
+      throw new Error(
+        `Failed to connect to MongoDB: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
   }
 
   async disconnect() {
@@ -23,8 +32,16 @@ export class MongoKit {
       return;
     }
 
-    await this.client.close();
-    this.connected = false;
+    try {
+      await this.client.close();
+      this.connected = false;
+    } catch (error) {
+      throw new Error(
+        `Failed to disconnect from MongoDB: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
   }
 
   getClient() {
