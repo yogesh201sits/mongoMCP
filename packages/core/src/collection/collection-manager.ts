@@ -1,10 +1,4 @@
-import type {
-  Collection,
-  Document,
-  Filter,
-  UpdateFilter,
-  IndexSpecification
-} from "mongodb";
+import type {Collection,  Document,  Filter,  UpdateFilter,  IndexSpecification} from "mongodb";
 
 import { serialize } from "../utils/serializer";
 
