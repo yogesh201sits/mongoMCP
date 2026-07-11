@@ -1,0 +1,10 @@
+{
+  "name": "@mongodb-kit/core",
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "mongodb": "^7.5.0",
+    "zod": "^4.4.3"
+  }
+}  
+
