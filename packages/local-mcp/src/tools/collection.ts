@@ -37,35 +37,133 @@ export function registerCollectionTools(server: McpServer) {
     }
   );
   server.registerTool(
-  "insert_document",
-  {
-    title: "Insert Document",
-    description: "Insert a document into a MongoDB collection.",
-    inputSchema: {
-      uri: z.string(),
-      database: z.string(),
-      collection: z.string(),
-      document: z.record(z.string(), z.any()),
+    "insert_document",
+    {
+      title: "Insert Document",
+      description: "Insert a document into a MongoDB collection.",
+      inputSchema: {
+        uri: z.string(),
+        database: z.string(),
+        collection: z.string(),
+        document: z.record(z.string(), z.any()),
+      },
     },
-  },
-  async ({ uri, database, collection, document }) => {
-    const mongo = await createMongo(uri);
+    async ({ uri, database, collection, document }) => {
+      const mongo = await createMongo(uri);
 
-    const result = await mongo
-      .database(database)
-      .collection(collection)
-      .insert(document);
+      const result = await mongo
+        .database(database)
+        .collection(collection)
+        .insert(document);
 
-    await mongo.disconnect();
+      await mongo.disconnect();
 
-    return {
-      content: [
-        {
-          type: "text",
-          text: JSON.stringify(result, null, 2),
-        },
-      ],
-    };
-  }
-);
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+  );
+  server.registerTool(
+    "update_documents",
+    {
+      title: "Update Documents",
+      description: "Update documents in a MongoDB collection.",
+      inputSchema: {
+        uri: z.string(),
+        database: z.string(),
+        collection: z.string(),
+        filter: z.record(z.string(), z.any()),
+        update: z.record(z.string(), z.any()),
+      },
+    },
+    async ({ uri, database, collection, filter, update }) => {
+      const mongo = await createMongo(uri);
+
+      const result = await mongo
+        .database(database)
+        .collection(collection)
+        .update(filter, update);
+
+      await mongo.disconnect();
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+  );
+  server.registerTool(
+    "delete_documents",
+    {
+      title: "Delete Documents",
+      description: "Delete documents from a MongoDB collection.",
+      inputSchema: {
+        uri: z.string(),
+        database: z.string(),
+        collection: z.string(),
+        filter: z.record(z.string(), z.any()),
+      },
+    },
+    async ({ uri, database, collection, filter }) => {
+      const mongo = await createMongo(uri);
+
+      const result = await mongo
+        .database(database)
+        .collection(collection)
+        .delete(filter);
+
+      await mongo.disconnect();
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+  );
+  server.registerTool(
+    "aggregate_documents",
+    {
+      title: "Aggregate Documents",
+      description: "Run an aggregation pipeline.",
+      inputSchema: {
+        uri: z.string(),
+        database: z.string(),
+        collection: z.string(),
+        pipeline: z.array(z.record(z.string(), z.any())),
+      },
+    },
+    async ({ uri, database, collection, pipeline }) => {
+      const mongo = await createMongo(uri);
+
+      const result = await mongo
+        .database(database)
+        .collection(collection)
+        .aggregate(pipeline);
+
+      await mongo.disconnect();
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+  );
+
 }
