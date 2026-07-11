@@ -1,4 +1,5 @@
 import type { Db } from "mongodb";
+import { CollectionManager } from "../collection/collection-manager";
 
 export class DatabaseManager {
   private db: Db;
@@ -11,6 +12,12 @@ export class DatabaseManager {
     return this.db.databaseName;
   }
 
+  collection(name: string) {
+    return new CollectionManager(
+      this.db.collection(name)
+    );
+  }
+
   async listCollections() {
     const collections = await this.db
       .listCollections()
@@ -19,16 +26,6 @@ export class DatabaseManager {
     return collections.map(
       (collection) => collection.name
     );
-  }
-
-  async createCollection(name: string) {
-    return await this.db.createCollection(name);
-  }
-
-  async dropCollection(name: string) {
-    return await this.db
-      .collection(name)
-      .drop();
   }
 
   getNativeDb() {
