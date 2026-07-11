@@ -2,9 +2,9 @@
 
 import { Command } from "commander";
 import { databaseCommands } from "./commands/database";
+import { collectionCommands } from "./commands/collection";
 
 const program = new Command();
-
 
 program
   .name("mongodb-kit")
@@ -15,8 +15,9 @@ program
     "MongoDB connection URI"
   );
 
-// Register commands
+//register commands
 databaseCommands(program);
+collectionCommands(program);
 
 // Parse CLI arguments
 program.parse();
