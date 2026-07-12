@@ -129,4 +129,48 @@ Finally provide:
             ],
         })
     );
+
+    server.registerPrompt(
+        "schema-summary",
+        {
+            title: "Schema Summary",
+            description:
+                "Summarizes a MongoDB collection schema and provides insights.",
+            argsSchema: {
+                database: z.string().describe("Database name"),
+                collection: z.string().describe("Collection name"),
+            },
+        },
+        async ({ database, collection }) => ({
+            messages: [
+                {
+                    role: "user",
+                    content: {
+                        type: "text",
+                        text: `
+You are an experienced MongoDB database architect.
+
+Database: ${database}
+Collection: ${collection}
+
+Before answering, inspect the following resource:
+
+- mongodb://${database}/${collection}/schema
+
+Provide:
+
+1. A brief summary of the collection's purpose.
+2. An explanation of each field and its inferred type.
+3. Any nested objects or arrays that may require special attention.
+4. Fields that appear to be optional or nullable.
+5. Suggestions to improve the schema design, if applicable.
+6. Any potential indexing opportunities based on the schema.
+
+Present the response in a clear, developer-friendly format.
+          `.trim(),
+                    },
+                },
+            ],
+        })
+    );
 }
