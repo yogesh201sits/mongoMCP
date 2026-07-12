@@ -1,6 +1,15 @@
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createMongo } from "../context";
-import "dotenv/config";
+import dotenv from "dotenv";
+import { fileURLToPath } from "node:url";
+
+const envPath = fileURLToPath(new URL("../../.env", import.meta.url));
+dotenv.config({ path: envPath });
+
+const mongoUri = process.env.MONGODB_URI;
+if (mongoUri) {
+  console.log(mongoUri);
+}
 
 export function registerDatabaseResources(server: McpServer) {
   server.registerResource(

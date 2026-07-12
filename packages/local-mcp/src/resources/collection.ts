@@ -1,5 +1,10 @@
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createMongo } from "../context";
+import dotenv from "dotenv";
+import { fileURLToPath } from "node:url";
+
+const envPath = fileURLToPath(new URL("../../.env", import.meta.url));
+dotenv.config({ path: envPath });
 
 export function registerCollectionResources(server: McpServer) {
   server.registerResource(
