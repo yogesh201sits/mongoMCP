@@ -148,29 +148,77 @@ Finally provide:
                     content: {
                         type: "text",
                         text: `
-You are an experienced MongoDB database architect.
+                        You are an experienced MongoDB database architect.
 
-Database: ${database}
-Collection: ${collection}
+                        Database: ${database}
+                        Collection: ${collection}
 
-Before answering, inspect the following resource:
+                        Before answering, inspect the following resource:
 
-- mongodb://${database}/${collection}/schema
+                        - mongodb://${database}/${collection}/schema
 
-Provide:
+                        Provide:
 
-1. A brief summary of the collection's purpose.
-2. An explanation of each field and its inferred type.
-3. Any nested objects or arrays that may require special attention.
-4. Fields that appear to be optional or nullable.
-5. Suggestions to improve the schema design, if applicable.
-6. Any potential indexing opportunities based on the schema.
+                        1. A brief summary of the collection's purpose.
+                        2. An explanation of each field and its inferred type.
+                        3. Any nested objects or arrays that may require special attention.
+                        4. Fields that appear to be optional or nullable.
+                        5. Suggestions to improve the schema design, if applicable.
+                        6. Any potential indexing opportunities based on the schema.
 
-Present the response in a clear, developer-friendly format.
-          `.trim(),
+                        Present the response in a clear, developer-friendly format.
+                `.trim(),
                     },
                 },
             ],
         })
     );
+    server.registerPrompt(
+  "query-optimizer",
+  {
+    title: "Query Optimizer",
+    description: "Analyze and optimize a MongoDB query.",
+    argsSchema: {
+      database: z.string().describe("Database name"),
+      collection: z.string().describe("Collection name"),
+      query: z.string().describe("MongoDB query to optimize"),
+    },
+  },
+  async ({ database, collection, query }) => ({
+    messages: [
+      {
+        role: "user",
+        content: {
+          type: "text",
+          text: `
+You are a MongoDB performance expert.
+
+Database: ${database}
+Collection: ${collection}
+
+Before answering, inspect the following resources:
+
+- mongodb://${database}/${collection}/schema
+- mongodb://${database}/${collection}/indexes
+
+Analyze the following MongoDB query:
+
+${query}
+
+Provide:
+
+1. An explanation of what the query does.
+2. Potential performance issues.
+3. Whether existing indexes are sufficient.
+4. Recommended indexes, if any.
+5. Suggestions to improve filtering, sorting, and projection.
+6. Any other best practices to improve performance.
+
+Present the optimized query if improvements can be made.
+        `.trim(),
+        },
+      },
+    ],
+  })
+);
 }
