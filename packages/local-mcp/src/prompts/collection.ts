@@ -174,51 +174,105 @@ Finally provide:
         })
     );
     server.registerPrompt(
-  "query-optimizer",
-  {
-    title: "Query Optimizer",
-    description: "Analyze and optimize a MongoDB query.",
-    argsSchema: {
-      database: z.string().describe("Database name"),
-      collection: z.string().describe("Collection name"),
-      query: z.string().describe("MongoDB query to optimize"),
-    },
-  },
-  async ({ database, collection, query }) => ({
-    messages: [
-      {
-        role: "user",
-        content: {
-          type: "text",
-          text: `
-You are a MongoDB performance expert.
-
-Database: ${database}
-Collection: ${collection}
-
-Before answering, inspect the following resources:
-
-- mongodb://${database}/${collection}/schema
-- mongodb://${database}/${collection}/indexes
-
-Analyze the following MongoDB query:
-
-${query}
-
-Provide:
-
-1. An explanation of what the query does.
-2. Potential performance issues.
-3. Whether existing indexes are sufficient.
-4. Recommended indexes, if any.
-5. Suggestions to improve filtering, sorting, and projection.
-6. Any other best practices to improve performance.
-
-Present the optimized query if improvements can be made.
-        `.trim(),
+        "query-optimizer",
+        {
+            title: "Query Optimizer",
+            description: "Analyze and optimize a MongoDB query.",
+            argsSchema: {
+                database: z.string().describe("Database name"),
+                collection: z.string().describe("Collection name"),
+                query: z.string().describe("MongoDB query to optimize"),
+            },
         },
-      },
-    ],
-  })
-);
+        async ({ database, collection, query }) => ({
+            messages: [
+                {
+                    role: "user",
+                    content: {
+                        type: "text",
+                        text: `
+            You are a MongoDB performance expert.
+
+            Database: ${database}
+            Collection: ${collection}
+
+            Before answering, inspect the following resources:
+
+            - mongodb://${database}/${collection}/schema
+            - mongodb://${database}/${collection}/indexes
+
+            Analyze the following MongoDB query:
+
+            ${query}
+
+            Provide:
+
+            1. An explanation of what the query does.
+            2. Potential performance issues.
+            3. Whether existing indexes are sufficient.
+            4. Recommended indexes, if any.
+            5. Suggestions to improve filtering, sorting, and projection.
+            6. Any other best practices to improve performance.
+
+            Present the optimized query if improvements can be made.
+        `.trim(),
+                    },
+                },
+            ],
+        })
+    );
+    server.registerPrompt(
+        "index-advisor",
+        {
+            title: "Index Advisor",
+            description: "Recommend MongoDB indexes based on a collection and workload.",
+            argsSchema: {
+                database: z.string().describe("Database name"),
+                collection: z.string().describe("Collection name"),
+                workload: z
+                    .string()
+                    .describe("Description of the application's query workload"),
+            },
+        },
+        async ({ database, collection, workload }) => ({
+            messages: [
+                {
+                    role: "user",
+                    content: {
+                        type: "text",
+                        text: `
+                            You are an expert MongoDB database administrator specializing in query optimization and indexing.
+
+                            Database: ${database}
+                            Collection: ${collection}
+
+                            Before answering, inspect the following resources:
+
+                            - mongodb://${database}/${collection}/schema
+                            - mongodb://${database}/${collection}/sample
+                            - mongodb://${database}/${collection}/indexes
+
+                            Application workload:
+
+                            ${workload}
+
+                            Based on the schema, sample documents, existing indexes, and workload, provide:
+
+                            1. An evaluation of the current indexing strategy.
+                            2. Recommended single-field indexes.
+                            3. Recommended compound indexes.
+                            4. Whether unique indexes are appropriate.
+                            5. Whether partial indexes would be beneficial.
+                            6. Whether TTL indexes would be beneficial.
+                            7. Any redundant or unused indexes that could be removed.
+                            8. The expected performance impact of each recommendation.
+                            9. Example MongoDB commands to create the recommended indexes.
+
+                            Explain the reasoning behind every recommendation.
+        `.trim(),
+                    },
+                },
+            ],
+        })
+    );
 }
