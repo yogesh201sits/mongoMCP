@@ -5,6 +5,7 @@ import { registerCollectionTools } from "./tools/collection";
 import { registerIndexTools } from "./tools";
 import {registerDatabaseResources} from "./resources/database";
 import { registerCollectionResources } from "./resources/collection";
+import { registerCollectionPrompts } from "./prompts/collection";
 
 export function createServer() {
   const server = new McpServer({
@@ -18,6 +19,7 @@ export function createServer() {
 
   registerDatabaseResources(server);
   registerCollectionResources(server);
+  registerCollectionPrompts(server)
 
   return server;
 
