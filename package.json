@@ -12,5 +12,8 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/inspector": "^0.22.0"
+  }
 }
