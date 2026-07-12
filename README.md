@@ -1,4 +1,5 @@
-# MongoDB Kit
+# mongoMCP
+<img width="250" height="250" alt="image" src="https://github.com/user-attachments/assets/116c5a83-da33-4dbb-bac4-3eaefa05ed44" />
 
 A collection of tools for working with MongoDB from the command line and AI clients.
 
