@@ -2,7 +2,6 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp";
 import { z } from "zod";
 import { createMongo } from "../context";
 
-
 export function registerIndexTools(server: McpServer) {
     server.registerTool(
         "list_indexes",
