@@ -10,6 +10,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.1",
     "@mongodb-kit/core": "workspace:*",
+    "dotenv": "^17.4.2",
     "zod": "^4.1.5"
   }
 }
