@@ -6,9 +6,14 @@ import { fileURLToPath } from "node:url";
 const envPath = fileURLToPath(new URL("../../.env", import.meta.url));
 dotenv.config({ path: envPath });
 
-const mongoUri = process.env.MONGODB_URI;
-if (mongoUri) {
-  console.log(mongoUri);
+function getMongoUri(): string {
+  const mongoUri = process.env.MONGODB_URI;
+
+  if (!mongoUri) {
+    throw new Error("Missing MONGODB_URI environment variable");
+  }
+
+  return mongoUri;
 }
 
 export function registerDatabaseResources(server: McpServer) {
@@ -22,7 +27,7 @@ export function registerDatabaseResources(server: McpServer) {
       description: "Lists all collections in a MongoDB database.",
     },
     async (uri, { database }) => {
-      const mongo = await createMongo(process.env.MONGODB_URI!);
+      const mongo = await createMongo(getMongoUri());
 
       const collections = await mongo
         .database(database as string)

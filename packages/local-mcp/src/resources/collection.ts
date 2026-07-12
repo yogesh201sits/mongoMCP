@@ -6,6 +6,16 @@ import { fileURLToPath } from "node:url";
 const envPath = fileURLToPath(new URL("../../.env", import.meta.url));
 dotenv.config({ path: envPath });
 
+function getMongoUri(): string {
+  const mongoUri = process.env.MONGODB_URI;
+
+  if (!mongoUri) {
+    throw new Error("Missing MONGODB_URI environment variable");
+  }
+
+  return mongoUri;
+}
+
 export function registerCollectionResources(server: McpServer) {
   server.registerResource(
     "collection-sample",
@@ -17,7 +27,7 @@ export function registerCollectionResources(server: McpServer) {
       description: "Returns the first 10 documents from a MongoDB collection.",
     },
     async (uri, { database, collection }) => {
-      const mongo = await createMongo(process.env.MONGODB_URI!);
+      const mongo = await createMongo(getMongoUri());
 
       const documents = await mongo
         .database(database as string)
@@ -36,4 +46,33 @@ export function registerCollectionResources(server: McpServer) {
       };
     }
   );
+  server.registerResource(
+  "collection-indexes",
+  new ResourceTemplate("mongodb://{database}/{collection}/indexes", {
+    list: undefined,
+  }),
+  {
+    title: "MongoDB Collection Indexes",
+    description: "Lists all indexes for a MongoDB collection.",
+  },
+  async (uri, { database, collection }) => {
+    const mongo = await createMongo(getMongoUri());
+
+    const indexes = await mongo
+      .database(database as string)
+      .collection(collection as string)
+      .listIndexes();
+
+    await mongo.disconnect();
+
+    return {
+      contents: [
+        {
+          uri: uri.href,
+          text: JSON.stringify(indexes, null, 2),
+        },
+      ],
+    };
+  }
+);
 }
