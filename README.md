@@ -1,6 +1,17 @@
+
+<div align="center">
+
 # mongoMCP
+
 <img width="250" height="250" alt="image" src="https://github.com/user-attachments/assets/116c5a83-da33-4dbb-bac4-3eaefa05ed44" />
 
+
+![Bun](https://img.shields.io/badge/Bun-000000?style=flat&logo=bun&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat&logo=mongodb&logoColor=white)
+![MCP](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-blueviolet?style=flat)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
+</div>
 A collection of tools for working with MongoDB from the command line and AI clients.
 
 MongoDB Kit provides a shared core library, a command-line interface, and a local Model Context Protocol (MCP) server, all built on top of the official MongoDB Node.js driver.
